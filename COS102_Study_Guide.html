@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COS 102 — Problem Solving Using C Programming</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F8F7F2;--surface:#FFFFFF;--surface2:#F1F0EB;
+  --text:#1C1917;--muted:#78716C;--border:#E7E5E4;
+  --green:#166534;--green-l:#F0FDF4;--green-m:#BBF7D0;
+  --blue:#1E40AF;--blue-l:#EFF6FF;
+  --purple:#6D28D9;--purple-l:#F5F3FF;
+  --amber:#B45309;--amber-l:#FFFBEB;
+  --code:#0F172A;--code-t:#E2E8F0;
+}
+html{scroll-behavior:smooth}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.75}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:var(--text);display:flex;align-items:stretch;overflow-x:auto;-webkit-overflow-scrolling:touch}
+nav .brand{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:#94A3B8;padding:1rem 1.5rem;border-right:1px solid #334155;white-space:nowrap;display:flex;align-items:center}
+nav a{color:#CBD5E1;text-decoration:none;padding:.9rem 1.1rem;font-size:.78rem;font-weight:500;white-space:nowrap;border-bottom:3px solid transparent;transition:color .2s}
+nav a:hover{color:#fff}
+nav a.c1:hover,nav a.c1.active{border-bottom-color:#4ADE80;color:#fff}
+nav a.c2:hover,nav a.c2.active{border-bottom-color:#60A5FA;color:#fff}
+nav a.c3:hover,nav a.c3.active{border-bottom-color:#A78BFA;color:#fff}
+nav a.c4:hover,nav a.c4.active{border-bottom-color:#FCD34D;color:#fff}
+nav a.cr:hover{border-bottom-color:#FB7185;color:#fff}
+
+/* ── HERO ── */
+.hero{background:var(--text);color:#fff;padding:5rem 2rem;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-30%;left:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(34,197,94,.12) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-30%;right:-10%;width:400px;height:400px;background:radial-gradient(circle,rgba(99,102,241,.15) 0%,transparent 70%);pointer-events:none}
+.hero .tag{display:inline-block;background:rgba(74,222,128,.15);color:#4ADE80;border:1px solid rgba(74,222,128,.3);padding:.3rem 1rem;border-radius:100px;font-size:.72rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;margin-bottom:1.5rem}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,6vw,4rem);font-weight:900;line-height:1.1;margin-bottom:1rem}
+.hero p{color:#94A3B8;font-size:1.05rem;max-width:580px;margin:0 auto 2.5rem}
+.pills{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.pills a{text-decoration:none;padding:.5rem 1.25rem;border-radius:100px;font-size:.82rem;font-weight:500;color:#fff;transition:opacity .2s,transform .2s}
+.pills a:hover{opacity:.85;transform:translateY(-2px)}
+.p1{background:var(--green)}.p2{background:var(--blue)}.p3{background:var(--purple)}.p4{background:var(--amber)}
+
+/* ── LAYOUT ── */
+.wrap{max-width:920px;margin:0 auto;padding:0 1.5rem}
+.chap{padding:3.5rem 0 4rem;border-bottom:2px dashed var(--border)}
+.chap:last-child{border-bottom:none}
+
+/* ── CHAPTER HEADER ── */
+.ch-head{margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.ch-num{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.6rem}
+.c1 .ch-num{color:var(--green)}.c2 .ch-num{color:var(--blue)}.c3 .ch-num{color:var(--purple)}.c4 .ch-num{color:var(--amber)}
+.ch-head h2{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,4vw,2.6rem);font-weight:900;line-height:1.2;margin-bottom:.75rem}
+.ch-head p{color:var(--muted);font-size:1rem;max-width:640px}
+
+/* ── SECTION ── */
+.sec{margin-bottom:2.75rem}
+h3{font-size:1.25rem;font-weight:600;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+h4{font-size:1.02rem;font-weight:600;margin:1.5rem 0 .65rem;color:var(--text)}
+p{margin-bottom:.9rem}p:last-child{margin-bottom:0}
+
+/* ── CALLOUTS ── */
+.box{border-radius:8px;padding:1.2rem 1.4rem;margin:1.5rem 0}
+.box-label{font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.4rem}
+.def{background:var(--green-l);border-left:4px solid var(--green)}.def .box-label{color:var(--green)}
+.tip{background:var(--amber-l);border-left:4px solid var(--amber)}.tip .box-label{color:var(--amber)}
+.ex{background:var(--blue-l);border-left:4px solid var(--blue)}.ex .box-label{color:var(--blue)}
+.exc{background:var(--purple-l);border-left:4px solid var(--purple)}.exc .box-label{color:var(--purple)}
+.analogy{background:linear-gradient(135deg,#FFF7ED,#FFFBEB);border:1px solid #FDE68A;border-radius:8px;padding:1.2rem 1.4rem;margin:1.5rem 0}
+.analogy .box-label{font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:.4rem}
+
+/* ── CODE ── */
+.code-wrap{background:var(--code);border-radius:10px;padding:1.5rem;margin:1.5rem 0;overflow-x:auto;position:relative}
+.code-lang{position:absolute;top:.75rem;right:1rem;font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:#475569;letter-spacing:.06em;text-transform:uppercase}
+.code-wrap pre{font-family:'IBM Plex Mono',monospace;font-size:.87rem;line-height:1.8;color:var(--code-t);white-space:pre}
+.kw{color:#93C5FD;font-weight:600}.fn{color:#67E8F9}.str{color:#86EFAC}.cm{color:#475569;font-style:italic}.num{color:#FCA5A5}.pp{color:#C4B5FD}.op{color:#FCD34D}
+code{font-family:'IBM Plex Mono',monospace;font-size:.875em;background:#E2E8F0;color:#1E293B;padding:.15em .4em;border-radius:3px}
+
+/* ── PSEUDO ── */
+.pseudo{background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;padding:1.4rem 1.6rem;margin:1.5rem 0;font-family:'IBM Plex Mono',monospace;font-size:.87rem;line-height:1.85}
+.pk{color:var(--purple);font-weight:700}.pm{color:var(--muted);font-style:italic}.pn{color:var(--muted);margin-right:.8rem}
+.ind1{padding-left:2rem}.ind2{padding-left:4rem}
+
+/* ── TABLES ── */
+.tw{overflow-x:auto;margin:1.5rem 0;border-radius:8px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+thead{background:var(--text);color:#fff}
+thead th{padding:.8rem 1.1rem;text-align:left;font-weight:600;font-size:.78rem;letter-spacing:.03em}
+tbody tr:nth-child(even){background:var(--surface2)}
+tbody tr{background:var(--surface)}
+tbody td{padding:.8rem 1.1rem;border-bottom:1px solid var(--border);vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+
+/* ── LISTS ── */
+ol,ul{padding-left:1.5rem;margin-bottom:.9rem}
+li{margin-bottom:.4rem}li:last-child{margin-bottom:0}
+
+/* ── NUMBERED STEPS ── */
+.steps{list-style:none;padding:0;counter-reset:steps}
+.steps li{counter-increment:steps;display:flex;gap:1rem;padding:.85rem 0;border-bottom:1px solid var(--border)}
+.steps li:last-child{border-bottom:none}
+.steps li::before{content:counter(steps);min-width:28px;height:28px;border-radius:50%;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;font-family:'IBM Plex Mono',monospace;flex-shrink:0;margin-top:.1rem}
+
+/* ── GRID CARDS ── */
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:1.5rem 0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.2rem}
+.card h5{font-size:.92rem;font-weight:700;margin-bottom:.4rem}
+.card p{font-size:.86rem;color:var(--muted);margin:0}
+
+/* ── PILLARS ── */
+.pillars{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin:1.5rem 0}
+.pillar{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.4rem;position:relative;overflow:hidden}
+.pillar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.pill-1::before{background:var(--green)}.pill-2::before{background:var(--blue)}.pill-3::before{background:var(--purple)}.pill-4::before{background:var(--amber)}
+.pillar .pnum{font-family:'IBM Plex Mono',monospace;font-size:2.5rem;font-weight:700;opacity:.08;position:absolute;top:.2rem;right:.8rem;line-height:1}
+.pillar h5{font-size:.97rem;font-weight:700;margin-bottom:.4rem}
+.pillar p{font-size:.85rem;color:var(--muted);margin:0}
+
+/* ── PROPERTIES ── */
+.props{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1.5rem 0}
+.prop{display:flex;gap:1rem;padding:1.1rem 1.2rem;border-bottom:1px solid var(--border);background:var(--surface);align-items:flex-start}
+.prop:last-child{border-bottom:none}
+.prop:hover{background:var(--surface2)}
+.badge{min-width:82px;padding:.28rem .5rem;border-radius:4px;font-size:.72rem;font-weight:700;text-align:center;font-family:'IBM Plex Mono',monospace}
+.b1{background:#DCFCE7;color:#166534}.b2{background:#DBEAFE;color:#1E40AF}.b3{background:#F3E8FF;color:#6D28D9}.b4{background:#FEF3C7;color:#B45309}.b5{background:#FCE7F3;color:#9D174D}
+.prop h5{font-size:.92rem;font-weight:600;margin-bottom:.25rem}
+.prop p{font-size:.85rem;color:var(--muted);margin:0}
+
+/* ── ALGO BLOCK ── */
+.algo{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1.5rem 0}
+.algo-hd{background:var(--surface2);padding:.8rem 1.2rem;font-size:.72rem;font-weight:600;font-family:'IBM Plex Mono',monospace;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.algo ol{padding:1.1rem 1.2rem 1.1rem 3rem;margin:0}
+.algo li{margin-bottom:.45rem;padding:.15rem 0}
+
+/* ── FLOWCHART DIAGRAM ── */
+.fc-demo{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:2rem;display:flex;flex-direction:column;align-items:center;gap:0;margin:1.5rem 0}
+.fc-term{background:var(--text);color:#fff;padding:.45rem 1.8rem;border-radius:50px;font-size:.82rem;font-weight:600;font-family:'IBM Plex Mono',monospace}
+.fc-arr{height:26px;width:2px;background:#94A3B8;position:relative;margin-bottom:8px;flex-shrink:0}
+.fc-arr::after{content:'';position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:#94A3B8}
+.fc-io{background:#EFF6FF;border:2px solid #93C5FD;color:var(--blue);padding:.55rem 1.8rem;font-size:.82rem;font-weight:500;text-align:center;transform:skewX(-14deg);min-width:200px}
+.fc-io span{display:inline-block;transform:skewX(14deg)}
+.fc-proc{background:var(--green-l);border:2px solid var(--green-m);color:var(--green);padding:.55rem 1.5rem;font-size:.82rem;font-weight:500;text-align:center;min-width:200px}
+
+/* ── FLOWCHART SYMBOLS ── */
+.fc-syms{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem;margin:1.5rem 0}
+.fc-sym{display:flex;align-items:center;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem}
+.fc-shape{min-width:48px;display:flex;align-items:center;justify-content:center}
+.s-oval{background:var(--text);border-radius:50px;width:44px;height:22px}
+.s-para{background:#EFF6FF;border:2px solid #93C5FD;width:44px;height:24px;transform:skewX(-14deg)}
+.s-rect{background:var(--green-l);border:2px solid var(--green-m);width:44px;height:24px}
+.s-diam{width:26px;height:26px;background:#FEF3C7;border:2px solid #FCD34D;transform:rotate(45deg)}
+.s-circ{background:var(--purple-l);border:2px solid #C4B5FD;width:24px;height:24px;border-radius:50%}
+.fc-sym h6{font-size:.83rem;font-weight:600;margin-bottom:.15rem}
+.fc-sym p{font-size:.78rem;color:var(--muted);margin:0}
+
+/* ── LINE EXPLAIN ── */
+.lines{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1.5rem 0}
+.lrow{display:grid;grid-template-columns:90px 1fr 1fr;gap:.8rem;padding:.85rem 1.1rem;border-bottom:1px solid var(--border);background:var(--surface);font-size:.85rem;align-items:start}
+.lrow:nth-child(even){background:var(--surface2)}
+.lrow:last-child{border-bottom:none}
+.ln{font-family:'IBM Plex Mono',monospace;color:var(--muted);font-size:.78rem;padding-top:.1rem}
+.lc{font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--blue);word-break:break-all}
+.ld{color:var(--muted);line-height:1.5}
+
+/* ── ESCAPE SEQS ── */
+.escs{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.65rem;margin:1.5rem 0}
+.esc{background:var(--code);border-radius:6px;padding:.8rem 1rem;display:flex;align-items:center;gap:.9rem}
+.esc-s{font-family:'IBM Plex Mono',monospace;font-size:.95rem;color:#86EFAC;font-weight:600;min-width:30px}
+.esc-d{font-size:.78rem;color:#94A3B8}
+
+/* ── SYMBOLS GRID ── */
+.syms{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.65rem;margin:1.5rem 0}
+.sym-item{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.8rem 1rem;display:flex;align-items:center;gap:.75rem}
+.sym-s{font-family:'IBM Plex Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--purple);min-width:28px}
+.sym-d{font-size:.8rem;color:var(--muted)}
+
+/* ── SUMMARY ── */
+.sumbox{background:var(--text);color:#fff;border-radius:8px;padding:2rem;margin:2.5rem 0}
+.sumbox h4{color:#4ADE80;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem}
+.sumbox ul{padding-left:1.25rem}
+.sumbox li{color:#CBD5E1;font-size:.88rem;margin-bottom:.5rem}
+
+/* ── REVIEW ── */
+.review{background:var(--surface2);border-radius:8px;padding:1.75rem;margin:2rem 0}
+.review h4{font-size:.72rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.25rem;color:var(--text)}
+.rq{margin-bottom:1.25rem;padding:1.1rem 1.2rem;background:#fff;border-radius:6px;border:1px solid var(--border)}
+.rq .qt{font-weight:500;margin-bottom:.65rem;font-size:.9rem}
+.rq .ans{background:var(--green-l);border-left:3px solid var(--green);padding:.8rem 1rem;border-radius:0 4px 4px 0;font-size:.87rem}
+.rq .al{font-size:.67rem;font-weight:700;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:.35rem}
+
+/* ── QUICK REF ── */
+.qr{background:#0F172A;color:#E2E8F0;padding:4rem 2rem}
+.qr-wrap{max-width:920px;margin:0 auto}
+.qr h2{font-family:'Playfair Display',serif;font-size:2rem;color:#fff;margin-bottom:.5rem}
+.qr>div>p{color:#94A3B8;margin-bottom:2.5rem}
+.qr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem}
+.qc{background:#1E293B;border:1px solid #334155;border-radius:8px;padding:1.4rem}
+.qc h4{color:#60A5FA;font-size:.72rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.9rem}
+.qc ul{padding-left:1rem}
+.qc li{color:#CBD5E1;font-size:.83rem;margin-bottom:.45rem}
+.qc li strong{color:#93C5FD}
+
+/* ── FOOTER ── */
+footer{background:var(--text);color:#94A3B8;text-align:center;padding:2.5rem 2rem;font-size:.83rem}
+footer strong{color:#fff}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .pillars{grid-template-columns:1fr}
+  .lrow{grid-template-columns:70px 1fr}
+  .lrow .ld{grid-column:1/-1;padding-left:70px}
+  nav a{padding:.8rem .75rem;font-size:.72rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <span class="brand">COS 102</span>
+  <a href="#ch1" class="c1">Ch.1 — Problem Solving</a>
+  <a href="#ch2" class="c2">Ch.2 — Computational Thinking</a>
+  <a href="#ch3" class="c3">Ch.3 — Algorithm Dev.</a>
+  <a href="#ch4" class="c4">Ch.4 — Intro to C</a>
+  <a href="#qref" class="cr">Quick Ref</a>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="wrap">
+    <div class="tag">COS 102 &nbsp;·&nbsp; Babcock University &nbsp;·&nbsp; Chapters 1–4</div>
+    <h1>Problem Solving<br>Using C Programming</h1>
+    <p>A full study guide covering everything — from algorithms and flowcharts to writing your first C programs.</p>
+    <div class="pills">
+      <a href="#ch1" class="p1">Ch.1: Problem Solving</a>
+      <a href="#ch2" class="p2">Ch.2: Computational Thinking</a>
+      <a href="#ch3" class="p3">Ch.3: Algorithm Development</a>
+      <a href="#ch4" class="p4">Ch.4: Intro to C</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CHAPTER 1
+══════════════════════════════════════════════ -->
+<div class="wrap">
+<div class="chap c1" id="ch1">
+  <div class="ch-head">
+    <div class="ch-num">Chapter One</div>
+    <h2>Introduction to Problem Solving Processes</h2>
+    <p>Covers the foundational concepts behind computers, programming, algorithms, and the structured process for solving computational problems.</p>
+  </div>
+
+  <!-- 1.1 Computer -->
+  <div class="sec">
+    <h3>1.1 — What is a Computer?</h3>
+    <p>A <strong>computer</strong> is an electronic device that accepts data, processes data, and outputs useful information while also storing information for current or later use. A computer acts based on instructions given to it. To solve a problem, it requires a human programmer to analyse the problem and develop a program (a set of instructions) for it.</p>
+    <p>A computer scientist develops a model representing the solution to a problem. This model is then implemented using a programming language like C, which the computer will execute.</p>
+    <div class="g2">
+      <div class="card"><h5>📥 Accepts Data</h5><p>Takes in raw input from the user or other sources.</p></div>
+      <div class="card"><h5>⚙️ Processes Data</h5><p>Transforms input data into useful information.</p></div>
+      <div class="card"><h5>📤 Outputs Information</h5><p>Displays or returns the result of processing.</p></div>
+      <div class="card"><h5>💾 Stores Data</h5><p>Retains data and information for current or later use.</p></div>
+    </div>
+  </div>
+
+  <!-- 1.2 Programming -->
+  <div class="sec">
+    <h3>1.2 — What is Programming?</h3>
+    <p><strong>Programming</strong> is the process of creating a set of instructions that tell a computer how to perform a task. These instructions are written in a <strong>programming language</strong>, which acts as a bridge between human thought and computer execution. Programming allows us to automate repetitive tasks, solve complex problems, create applications, and build intelligent systems.</p>
+    <div class="box def">
+      <div class="box-label">Definition</div>
+      A <strong>program</strong> is a set of instructions written in a computer-understandable language that a computer follows to solve a problem.
+    </div>
+  </div>
+
+  <!-- 1.3 Algorithm -->
+  <div class="sec">
+    <h3>1.3 — What is an Algorithm?</h3>
+    <p>An <strong>algorithm</strong> is the step-by-step procedure a computer follows to solve a problem. It is the <em>skeletal structure</em> of a program — the logic and plan before any program is written. An algorithm can be implemented in any programming language depending on the problem or the developer's preference.</p>
+    <div class="box tip">
+      <div class="box-label">Key Hint</div>
+      A step-by-step procedure a computer follows to solve a problem is called an <strong>algorithm</strong>. An algorithm is NOT a program — it is the plan before the program.
+    </div>
+    <div class="box ex">
+      <div class="box-label">Example — Algorithm for Cooking Rice</div>
+      <ol>
+        <li>Get rice</li>
+        <li>Wash rice</li>
+        <li>Put in pot</li>
+        <li>Add a reasonable quantity of water</li>
+        <li>Start gas</li>
+        <li>Put rice on fire</li>
+        <li>Add some measured quantity of salt</li>
+        <li>Add little onion (if you want)</li>
+        <li>Leave it on fire for a timed period</li>
+        <li>Test if done; if done remove from fire; if not, leave it a little longer (repeated process until ok)</li>
+        <li>Put off the fire and remove the rice.</li>
+      </ol>
+      <p style="margin-top:.75rem;font-size:.87rem;color:var(--blue)">The steps 1–11 show the analysis of the problem and how an algorithm is developed through thinking — not coding.</p>
+    </div>
+  </div>
+
+  <!-- 1.4 Problem Solving -->
+  <div class="sec">
+    <h3>1.4 — The Problem Solving Process</h3>
+    <p><strong>Problem solving</strong> is an act of finding a solution to a perplexing question. It is the foundation of programming and computational thinking. In computing, we ask: is this question solvable with a computer?</p>
+
+    <h4>1.4.1 — Steps in the Problem Solving Process</h4>
+    <ol class="steps">
+      <li><div><strong>Understanding and Analysis of the Problem</strong> — Fully understand what is being asked before attempting a solution. Identify all relevant details.</div></li>
+      <li><div><strong>Development of Algorithm</strong> — Devise a plan; create the step-by-step procedure <em>before</em> writing any code.</div></li>
+      <li><div><strong>Coding / Implementation</strong> — Translate the algorithm into actual program code in a programming language.</div></li>
+      <li><div><strong>Testing</strong> — Run the program to verify it produces the correct output for all possible inputs, including edge cases.</div></li>
+      <li><div><strong>Deployment and Maintenance</strong> — Release the solution to users and maintain it over time as needs evolve.</div></li>
+    </ol>
+    <div class="box tip">
+      <div class="box-label">Important Note</div>
+      At each stage there should be testing and proper documentation. There can also be a revisit of an earlier stage to refine an output or capture any omission — the process is not strictly linear.
+    </div>
+
+    <h4>1.4.2 — Simple Skills: Analysing Problems (IPO Framework)</h4>
+    <p>To properly understand a problem before coding, ask and answer these analytical questions. Knowing the input, process and output requirements helps you break the problem into smaller sub-problems.</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Category</th><th>Questions to Ask</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Input Data</strong></td><td>What data/information is available? What does it represent? What format is it in? Is anything missing?</td></tr>
+          <tr><td><strong>Processing</strong></td><td>Do I have everything I need? What do I need to compute? Can the computer solve this?</td></tr>
+          <tr><td><strong>Output</strong></td><td>What output information am I trying to produce? What format should the result be — text, chart, number?</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="box tip">
+      <div class="box-label">Strategy</div>
+      Each sub-problem gives a sub-solution, and all sub-solutions are eventually combined together to produce the final solution to the entire problem.
+    </div>
+  </div>
+
+  <!-- Example 1 -->
+  <div class="sec">
+    <h3>Worked Example 1 — Average Grade Calculation</h3>
+    <p><strong>Problem Statement:</strong> Calculate your average grade for all your subjects this semester.</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Input Requirements</th><th>Processing Requirements</th><th>Output Requirements</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Total number of subjects (integer)<br>Score per subject (decimal)<br>Total score (decimal)</td>
+            <td>Average grade = Total score ÷ Total number of subjects<br>Format: digit (decimal place)</td>
+            <td>Average grade<br>Format: decimal place value</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Sub-problems identified:</strong></p>
+    <ul>
+      <li><em>Total score:</em> problem of adding all subject scores together → Total score = A + B + C + D + E</li>
+      <li><em>Average grade:</em> problem of finding the average → Average = Total score / total no. of subjects (5)</li>
+    </ul>
+    <h4>Algorithm:</h4>
+    <div class="algo">
+      <div class="algo-hd">Algorithm — Average Grade</div>
+      <ol>
+        <li>Read in the scores in all the subjects</li>
+        <li>Add the scores together</li>
+        <li>Find average by dividing total score by the total number of subjects</li>
+        <li>Output the result</li>
+        <li>End the process</li>
+      </ol>
+    </div>
+    <div class="box tip">
+      <div class="box-label">Note</div>
+      The algorithm above can be written in any programming language of choice, e.g. C. That translation is called the <strong>program</strong>.
+    </div>
+  </div>
+
+  <!-- Example 2 -->
+  <div class="sec">
+    <h3>Worked Example 2 — Babcock University Payroll System</h3>
+    <p><strong>Problem Statement:</strong> The personnel office of Babcock University must compute the monthly emolument of all employees. Rules: if basic salary ≤ N5,000 → 5% tax, otherwise → 8% tax. Pension = 10% of gross pay.</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Input Requirements</th><th>Processing Requirements</th><th>Output Requirements</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>1. Employee Number<br>2. Employee Name<br>3. Basic Salary<br>4. Housing Allowance<br>5. Transport Allowance</td>
+            <td>
+              Total Allowee = Housing + Transport<br>
+              GrossPay = Basic Salary + Total Allowee<br>
+              Pension = (GrossPay × 10) / 100<br><br>
+              <strong>IF</strong> Basic ≤ 5000:<br>
+              &nbsp;&nbsp;Tax = (Basic × 5) / 100<br>
+              <strong>ELSE</strong>:<br>
+              &nbsp;&nbsp;Tax = (Basic × 8) / 100<br><br>
+              netPay = GrossPay − Tax − Pension
+            </td>
+            <td>1. Employee Number<br>2. Employee Name<br>3. Basic Salary<br>4. Total Allowance<br>5. Gross Pay<br>6. Tax<br>7. Net Pay</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="box ex">
+      <div class="box-label">Flowchart Logic for Payroll</div>
+      START → Input Employee details → Calculate Total Allowance → Calculate Gross Pay → Calculate Pension → Decision: Is Basic ≤ N5000? → YES: Tax = 5% of Basic | NO: Tax = 8% of Basic → Calculate Net Pay → Output Pay Slip → STOP
+    </div>
+  </div>
+
+  <div class="sumbox">
+    <h4>📌 Chapter 1 — Key Takeaways</h4>
+    <ul>
+      <li>A <strong>computer</strong> accepts, processes, outputs, and stores data.</li>
+      <li><strong>Programming</strong> = creating instructions for a computer using a programming language.</li>
+      <li>An <strong>algorithm</strong> = step-by-step procedure; the skeletal structure/plan before any program.</li>
+      <li>The 5 steps of problem solving: <strong>Understand → Algorithm → Code → Test → Deploy</strong>.</li>
+      <li>Always analyse problems in terms of <strong>Input → Processing → Output</strong> before coding.</li>
+      <li>Break large problems into sub-problems; each sub-solution contributes to the final solution.</li>
+    </ul>
+  </div>
+
+  <div class="review">
+    <h4>🔍 Review Questions &amp; Answers</h4>
+    <div class="rq">
+      <div class="qt">1.1 — What are the major steps in the problem solving process?</div>
+      <div class="ans"><div class="al">Answer</div>
+        (i) Understanding and analysis of the problem &nbsp;→&nbsp; (ii) Development of algorithm &nbsp;→&nbsp; (iii) Coding/implementation &nbsp;→&nbsp; (iv) Testing &nbsp;→&nbsp; (v) Deployment and Maintenance
+      </div>
+    </div>
+    <div class="rq">
+      <div class="qt">1.2 — A shop keeper sold 10 bottles of mayonnaise at 500 naira each with a 5% discount on total sales. How much did the buyer pay? Identify input, process, output.</div>
+      <div class="ans"><div class="al">Answer</div>
+        <strong>Input:</strong> Quantity = 10, Rate = 500<br>
+        <strong>Processing:</strong> amount = rate × quantity &nbsp;→&nbsp; discount = 0.05 × amount &nbsp;→&nbsp; amountPayable = amount − discount<br>
+        <strong>Output:</strong> Amount Payable
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CHAPTER 2
+══════════════════════════════════════════════ -->
+<div class="chap c2" id="ch2">
+  <div class="ch-head">
+    <div class="ch-num">Chapter Two</div>
+    <h2>Computational Thinking, System Thinking &amp; Problem Solving</h2>
+    <p>Explores the computational thinking model, its four pillars, how it relates to and differs from general problem solving, and the concept of systems thinking.</p>
+  </div>
+
+  <!-- 2.1 CT -->
+  <div class="sec">
+    <h3>2.1 — Computational Thinking Model</h3>
+    <p><strong>Computational thinking</strong> is a structured approach used to solve problems in computer science. It involves decomposition, pattern recognition, abstraction, and algorithm design. It is a problem-solving approach <em>specifically designed for computer-based solutions</em>. It focuses on thinking like a computer scientist — preparing a problem so that a computer can execute the solution.</p>
+    <div class="box def">
+      <div class="box-label">Definition</div>
+      Computational thinking is widely taught in Computer Science education because it is: a problem-solving approach used in computer science that focuses on logical thinking and algorithm design.
+    </div>
+
+    <h4>The Four Pillars of Computational Thinking</h4>
+    <div class="pillars">
+      <div class="pillar pill-1"><div class="pnum">1</div><h5>Decomposition</h5><p>Breaking complex problems into smaller, more manageable parts that are easier to solve.</p></div>
+      <div class="pillar pill-2"><div class="pnum">2</div><h5>Pattern Recognition</h5><p>Identifying similarities, trends, and regularities among problems to apply known solutions.</p></div>
+      <div class="pillar pill-3"><div class="pnum">3</div><h5>Abstraction</h5><p>Focusing on only the important details while ignoring irrelevant information.</p></div>
+      <div class="pillar pill-4"><div class="pnum">4</div><h5>Algorithm Design</h5><p>Creating step-by-step logical solutions that can be implemented by a computer.</p></div>
+    </div>
+    <p>This model is widely used in: <strong>programming education</strong>, <strong>AI systems design</strong>, <strong>software engineering</strong>, and <strong>data science</strong>.</p>
+  </div>
+
+  <!-- 2.2 Differences -->
+  <div class="sec">
+    <h3>2.2 — Key Differences: Problem Solving vs Computational Thinking</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Feature</th><th>Problem Solving</th><th>Computational Thinking</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Scope</strong></td><td>General concept used in many disciplines</td><td>Specific to computer science</td></tr>
+          <tr><td><strong>Goal</strong></td><td>Find a solution to a problem</td><td>Develop solutions that computers can execute</td></tr>
+          <tr><td><strong>Approach</strong></td><td>Logical reasoning</td><td>Algorithmic and computational approach</td></tr>
+          <tr><td><strong>Tools</strong></td><td>Reasoning, analysis</td><td>Algorithms, data structures, models</td></tr>
+          <tr><td><strong>Focus</strong></td><td>Human decision-making</td><td>Computer-executable solutions</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2.3 Relationship -->
+  <div class="sec">
+    <h3>2.3 — Relationship Between Problem Solving and Computational Thinking</h3>
+    <p>Problem solving is <em>broader</em> while computational thinking is a <em>specialized method</em> of problem solving used specifically in computing (e.g. calculating student grades).</p>
+    <div class="g2">
+      <div class="card">
+        <h5>Problem Solving Approach</h5>
+        <p>• Determine the formula<br>• Calculate manually</p>
+      </div>
+      <div class="card">
+        <h5>Computational Thinking Approach</h5>
+        <p>• Break problem into steps<br>• Design an algorithm<br>• Write a program<br>• Execute with the computer</p>
+      </div>
+    </div>
+    <div class="analogy">
+      <div class="box-label">Analogy</div>
+      <strong>Problem solving</strong> is like <em>deciding what to cook</em> — the broad decision. <strong>Computational thinking</strong> is like <em>writing a detailed recipe that a robot can follow</em> — precise, step-by-step, machine-executable.
+    </div>
+  </div>
+
+  <!-- 2.4 System Thinking -->
+  <div class="sec">
+    <h3>2.4 — System Thinking</h3>
+    <p><strong>System thinking</strong> is a method of analysing problems by considering the <em>entire system</em> and the relationships between its components, rather than examining each part in isolation. It is a holistic approach — it examines how different components interact and influence one another within a whole system.</p>
+    <div class="box ex">
+      <div class="box-label">Example — University System</div>
+      A university system has: Students, Lecturers, Courses, Administration, Infrastructure, Technology.<br><br>
+      Systems thinking does <strong>NOT</strong> study each component alone. Instead it examines:
+      <ul style="margin-top:.5rem">
+        <li>How students interact with courses</li>
+        <li>How lecturers interact with students</li>
+        <li>How administration supports teaching</li>
+        <li>How technology supports learning</li>
+      </ul>
+      All these interactions together form the <strong>education system</strong>.
+    </div>
+  </div>
+
+  <!-- 2.5 Principles -->
+  <div class="sec">
+    <h3>2.5 — Key Principles of Systems Thinking</h3>
+    <h4>1. Holistic View</h4>
+    <p>Systems thinking examines the <strong>whole system</strong>, not just individual parts. In software development, performance issues may not be caused by a single module but by <em>interactions between modules</em>.</p>
+    <h4>2. Interrelationships</h4>
+    <p>This principle focuses on <strong>connections and relationships between components</strong>.</p>
+    <div class="box ex">
+      <div class="box-label">Example — E-Commerce System</div>
+      Payment system ↔ Order processing &nbsp;|&nbsp; Order processing ↔ Inventory &nbsp;|&nbsp; Inventory ↔ Supply chain — all components interact.
+    </div>
+  </div>
+
+  <!-- 2.6 Systems CT in CS -->
+  <div class="sec">
+    <h3>2.6 — Systems Thinking in Computer Science</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Area</th><th>How Systems Thinking Applies</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Software Engineering</strong></td><td>Understanding how different software modules interact with each other</td></tr>
+          <tr><td><strong>System Analysis &amp; Design</strong></td><td>Analysing relationships between Inputs, Processes, Outputs, and Environment</td></tr>
+          <tr><td><strong>Distributed Systems</strong></td><td>Understanding interactions between multiple interconnected systems</td></tr>
+          <tr><td><strong>Artificial Intelligence</strong></td><td>Studying interactions among agents in complex systems</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 2.7 Difference Table -->
+  <div class="sec">
+    <h3>2.7 — Systems Thinking vs Computational Thinking</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Feature</th><th>Systems Thinking</th><th>Computational Thinking</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Focus</strong></td><td>Whole system and its interactions</td><td>Algorithmic problem solving</td></tr>
+          <tr><td><strong>Approach</strong></td><td>Holistic</td><td>Step-by-step logic</td></tr>
+          <tr><td><strong>Goal</strong></td><td>Understand system behaviour</td><td>Develop computable solutions</td></tr>
+          <tr><td><strong>Usage</strong></td><td>System design and analysis</td><td>Programming and algorithms</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="sumbox">
+    <h4>📌 Chapter 2 — Key Takeaways</h4>
+    <ul>
+      <li>Computational thinking has <strong>4 pillars</strong>: Decomposition, Pattern Recognition, Abstraction, Algorithm Design.</li>
+      <li>Problem solving is <strong>general</strong> (many disciplines); computational thinking is <strong>specific to CS</strong>.</li>
+      <li><strong>Problem solving</strong> = deciding what to cook. <strong>Computational thinking</strong> = writing the detailed recipe for a robot.</li>
+      <li>System thinking looks at the <strong>whole system</strong> and its interrelationships — not individual parts in isolation.</li>
+      <li>Systems thinking is used in software engineering, AI, distributed systems, system analysis &amp; design.</li>
+    </ul>
+  </div>
+
+  <div class="review">
+    <h4>🔍 Review Question &amp; Answer</h4>
+    <div class="rq">
+      <div class="qt">State a key difference between problem solving and computational thinking.</div>
+      <div class="ans"><div class="al">Answer</div>
+        <strong>Problem solving</strong> is a general concept used in many disciplines and involves logical reasoning.<br>
+        <strong>Computational thinking</strong> is specific to computer science and involves an algorithmic and computational approach to developing solutions that computers can execute.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CHAPTER 3
+══════════════════════════════════════════════ -->
+<div class="chap c3" id="ch3">
+  <div class="ch-head">
+    <div class="ch-num">Chapter Three</div>
+    <h2>Algorithm Development</h2>
+    <p>Covers how to formally define, design, and express algorithms using pseudocode and flowcharts — the two primary tools for algorithm representation before coding.</p>
+  </div>
+
+  <!-- 3.1 -->
+  <div class="sec">
+    <h3>3.1 — Algorithm Defined</h3>
+    <p>An <strong>algorithm</strong> is a step-by-step procedure of how a problem is solved or a task is performed. It is a finite sequence of instructions that specifies how a problem is to be solved. It is simply the <em>logic behind</em> or the <em>plan before</em> any program.</p>
+    <p>Algorithms are ideas behind computer programs. An algorithm remains the <strong>same irrespective of the programming language used</strong> (C, C++, Java, Python) and irrespective of the machine or location (Nigeria or Japan). Just as a recipe tells exactly how to cook a dish, an algorithm tells exactly how to accomplish a task.</p>
+    <div class="box ex">
+      <div class="box-label">Example Algorithm — Add Two Numbers</div>
+      <ol>
+        <li>Start</li>
+        <li>Read in two numbers</li>
+        <li>Add them</li>
+        <li>Display the result</li>
+        <li>Stop</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 3.2 Properties -->
+  <div class="sec">
+    <h3>3.2 — Key Properties of a Good Algorithm</h3>
+    <div class="box tip"><div class="box-label">Key Hint</div>The prime property of an algorithm is <strong>Correctness</strong>. An algorithm must deliver correct outputs for all legal instances of the problem.</div>
+    <div class="props">
+      <div class="prop">
+        <span class="badge b1">Correct</span>
+        <div><h5>Correctness</h5><p>Must always return the desired output for <strong>all legal instances</strong> of the problem — including edge cases. For a sorting algorithm, it must work whether inputs are already sorted, reversed, or contain repeated elements.</p></div>
+      </div>
+      <div class="prop">
+        <span class="badge b2">Clear</span>
+        <div><h5>Unambiguous</h5><p>Each step must be <strong>precisely defined</strong> with only one possible meaning. What is implicit in a human solution must be made explicit for a computer. Example of ambiguous instruction: <em>"stay away from the bank"</em> — does bank mean a river bank or a money bank?</p></div>
+      </div>
+      <div class="prop">
+        <span class="badge b3">Finite</span>
+        <div><h5>Finiteness</h5><p>The algorithm must <strong>end after a certain number of steps</strong>. "Finite" means countable — the algorithm cannot run forever (infinite loop = bad algorithm).</p></div>
+      </div>
+      <div class="prop">
+        <span class="badge b4">Definite</span>
+        <div><h5>Definiteness</h5><p>It should be <strong>well defined</strong> — every step must be definite and leave no room for interpretation or uncertainty.</p></div>
+      </div>
+      <div class="prop">
+        <span class="badge b5">Efficient</span>
+        <div><h5>Efficiency</h5><p>Determines the <strong>quantity of computer resources consumed</strong>. Measured in: <em>(a) Time</em> — how long it runs (time tends to be more important), and <em>(b) Space</em> — how much memory it consumes. A faster algorithm running on a slower computer will always win for large inputs.</p></div>
+      </div>
+    </div>
+    <h4>Other Characteristics of Algorithms</h4>
+    <div class="g2">
+      <div class="card"><h5>Input</h5><p>Takes some data as input — optional (may or may not have input).</p></div>
+      <div class="card"><h5>Output</h5><p>Must always produce a result — an algorithm without output is useless.</p></div>
+      <div class="card"><h5>Effective</h5><p>Each step must be simple, basic, and executable — not vague or conceptual.</p></div>
+    </div>
+  </div>
+
+  <!-- 3.3 Methodology -->
+  <div class="sec">
+    <h3>3.3 — Programming Methodology</h3>
+    <p><strong>Programming methodology</strong> is an organised, documented set of procedures and guidelines for one or more phases of the software lifecycle. It deals with how an algorithm is developed — a way of achieving good software engineering principles.</p>
+
+    <h4>Type 1: Top-Down Design (Structured Analysis / Stepwise Refinement)</h4>
+    <p>Uses a <strong>divide and conquer</strong> technique where the problem is broken into sub-problems, each of which can be conquered (solved) independently. Used by procedural programming languages like <strong>C</strong>.</p>
+    <div class="algo">
+      <div class="algo-hd">Top-Down Process</div>
+      <ol>
+        <li>Break the algorithm into subtasks</li>
+        <li>Break each subtask into smaller subtasks</li>
+        <li>Eventually the smaller subtasks become trivial to implement in the programming language</li>
+      </ol>
+    </div>
+    <h4>Benefits of Top-Down Design</h4>
+    <div class="g2">
+      <div class="card"><h5>Understandability</h5><p>Easy to understand — each part is small and focused.</p></div>
+      <div class="card"><h5>Maintainability</h5><p>Easy to change or modify one part without affecting others.</p></div>
+      <div class="card"><h5>Write-ability</h5><p>Easy to write — you tackle one small piece at a time.</p></div>
+      <div class="card"><h5>Testability</h5><p>Easy to test each module independently.</p></div>
+      <div class="card"><h5>Teamwork</h5><p>Promotes team collaboration — modules can be shared and solved by different people.</p></div>
+    </div>
+
+    <h4>Type 2: Object-Oriented Analysis and Design (OOAD)</h4>
+    <p>Used for object-oriented programming languages like Java, Python, C++. Views the world as <strong>sets of objects interacting</strong> together. Binds process and data together — making software more maintainable. An object is about binding process and data together (not treating them as separate sets).</p>
+
+    <h4>Expressing Algorithms</h4>
+    <p>Each methodology can be expressed using: <strong>Flowcharts</strong> / UML (diagramming notation) or <strong>Pseudocode</strong> (step-by-step cookbook approach). The two popular forms for procedural programming (like C) are pseudocode and flowcharts.</p>
+  </div>
+
+  <!-- 3.4 Pseudocode -->
+  <div class="sec">
+    <h3>3.4 — Pseudocode</h3>
+    <div class="box def">
+      <div class="box-label">Definition</div>
+      <strong>Pseudocode</strong> is a high-level description of an algorithm or program logic written in a structured, human-readable form that resembles programming code but is <em>not bound by the syntax rules of any programming language</em>. "Pseudo" means false — so pseudocode = "false code". It cannot be executed or compiled on a language translator.
+    </div>
+
+    <h4>Common Characteristics of Pseudocode</h4>
+    <ul>
+      <li>More reflective than a flowchart on the basis of structured design and programming concepts</li>
+      <li>Consists of logically arranged action statements — programming code can be generated almost automatically from it</li>
+      <li>Focuses on the <em>logic</em> of the algorithm, not the syntax</li>
+      <li>Action statements are natural language-like / English-like</li>
+      <li>Written as a combination of English and programming constructs</li>
+      <li>Steps are numbered; indentation is used for dependent statements</li>
+      <li>Avoids language-specific elements; is composed of words, clauses, and sentences</li>
+    </ul>
+
+    <h4>Advantages of Pseudocode</h4>
+    <ul>
+      <li>Helps in <strong>planning the algorithm before coding</strong></li>
+      <li>Easy to create in a text editor — uses English-like statements, no special software needed</li>
+      <li>Uses no special symbols; not strict about any language syntax</li>
+      <li>Can be translated to <strong>any programming language</strong> of the programmer's choice</li>
+      <li>Allows the problem to be first solved logically — this reduces time spent in coding, testing, and debugging</li>
+    </ul>
+
+    <h4>Pseudocode Guidelines</h4>
+    <ul>
+      <li>Contains no programming code — only logical steps</li>
+      <li>Statements must be detailed enough for the reader to clearly understand each action</li>
+      <li>Each variable name should be <strong>descriptive</strong> of what it represents. Shortened names discouraged</li>
+      <li>Each action should be on a single line (or indented if it spans more than one)</li>
+      <li>Indentation shows the logical grouping of related activities</li>
+      <li>Mostly in small letters <strong>except keywords</strong>: <code>IF, THEN, ELSE, ENDIF, DO WHILE, ENDDO, DO UNTIL, ENDDOD, CASE, ENDCASE</code></li>
+    </ul>
+
+    <h4>Pseudocode Symbols</h4>
+    <div class="syms">
+      <div class="sym-item"><span class="sym-s">=</span><span class="sym-d">Equal to</span></div>
+      <div class="sym-item"><span class="sym-s">#</span><span class="sym-d">Not equal to</span></div>
+      <div class="sym-item"><span class="sym-s">&gt;</span><span class="sym-d">Greater than</span></div>
+      <div class="sym-item"><span class="sym-s">&lt;</span><span class="sym-d">Less than</span></div>
+      <div class="sym-item"><span class="sym-s">&gt;=</span><span class="sym-d">Greater than or equal to</span></div>
+      <div class="sym-item"><span class="sym-s">&lt;=</span><span class="sym-d">Less than or equal to</span></div>
+      <div class="sym-item"><span class="sym-s">↑ / ^</span><span class="sym-d">Exponentiation</span></div>
+    </div>
+
+    <h4>Common Action Keywords</h4>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Operation</th><th>Keywords</th></tr></thead>
+        <tbody>
+          <tr><td>Input</td><td><code>READ, OBTAIN, GET, INPUT</code></td></tr>
+          <tr><td>Output</td><td><code>PRINT, DISPLAY, SHOW, PUT</code></td></tr>
+          <tr><td>Compute</td><td><code>COMPUTE, CALCULATE, DETERMINE</code></td></tr>
+          <tr><td>Initialise</td><td><code>SET, INIT</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>Basic Constructs in Pseudocode</h4>
+    <div class="g2">
+      <div class="card"><h5>Sequence</h5><p>Steps executed in order, one after another — the simplest construct.</p></div>
+      <div class="card"><h5>Selection</h5><p>Decision making using IF...THEN...ELSE...ENDIF structures.</p></div>
+      <div class="card"><h5>Iteration</h5><p>Repetition (looping) of steps using DO WHILE, FOR, or DO UNTIL.</p></div>
+    </div>
+
+    <h4>Pseudocode Example 1 — Sequence: Area of a Rectangle</h4>
+    <p><strong>Problem Statement:</strong> Find the area of a rectangle.</p>
+    <div class="pseudo">
+<span class="pn">1.</span><span class="pk">START</span>
+<span class="pn">2.</span><span class="pk">INPUT</span> length, breadth
+<span class="pn">3.</span>area = length * breadth
+<span class="pn">4.</span><span class="pk">DISPLAY</span> area
+<span class="pn">5.</span><span class="pk">STOP</span></div>
+
+    <h4>Pseudocode Example 2 — Selection: Even or Odd Number</h4>
+    <p><strong>Problem:</strong> Determine whether a number is even or odd.</p>
+    <div class="pseudo">
+<span class="pn">1.</span>Start
+<span class="pn">2.</span><span class="pk">Input</span> number N
+<span class="pn">3.</span>Check <span class="pk">IF</span> N mod 2 == 0
+<span class="pn">4.</span><span class="ind1"><span class="pk">IF</span> Yes &rarr; <span class="pk">DISPLAY</span> "Even"</span>
+<span class="pn">5.</span><span class="ind1"><span class="pk">IF</span> No &rarr; <span class="pk">DISPLAY</span> "Odd"</span>
+<span class="pn">6.</span>End</div>
+
+    <h4>Pseudocode Example 3 — Iteration: Sum of Even Integers (2 to 20)</h4>
+    <p><strong>Problem Statement:</strong> Calculate the sum of even integers between 2 and 20.</p>
+    <div class="pseudo">
+sum &larr; 0
+<span class="pk">FOR</span> i &larr; 2 to 20, do in steps of 2
+<span class="ind1">sum = sum + i</span>
+<span class="pk">ENDFOR</span>
+<span class="pk">DISPLAY</span> sum</div>
+  </div>
+
+  <!-- 3.5 Flowchart -->
+  <div class="sec">
+    <h3>3.5 — Flowchart</h3>
+    <div class="box def">
+      <div class="box-label">Definition</div>
+      A <strong>flowchart</strong> is a graphical representation of an algorithm, process, or program logic. It uses standardised symbols connected by arrows to show the sequence of steps and decision paths needed to solve a problem.
+    </div>
+
+    <h4>Steps to Draw a Flowchart</h4>
+    <ol class="steps">
+      <li><div>Start from the first stage of the problem-solving process.</div></li>
+      <li><div>Draw the <strong>start symbol</strong> (oval/terminal).</div></li>
+      <li><div>Draw the <strong>input symbol</strong> (parallelogram) — this step is optional, based on identified input.</div></li>
+      <li><div>Based on processing requirements, add the appropriate symbols: processing (rectangle) and decision (diamond), connected with arrows.</div></li>
+      <li><div>The <strong>output</strong> symbol (parallelogram) represents the expected result.</div></li>
+      <li><div>Indicate the <strong>end symbol</strong> (oval) and use arrows to show how each symbol connects to the end.</div></li>
+    </ol>
+
+    <h4>Major Flowchart Symbols</h4>
+    <div class="fc-syms">
+      <div class="fc-sym">
+        <div class="fc-shape"><div class="s-oval"></div></div>
+        <div><h6>Terminal (Oval)</h6><p>Indicates Start / Stop / End of the process.</p></div>
+      </div>
+      <div class="fc-sym">
+        <div class="fc-shape"><div class="s-para"></div></div>
+        <div><h6>Parallelogram</h6><p>Indicates Input or Output from/to computer memory. One entrance and one exit.</p></div>
+      </div>
+      <div class="fc-sym">
+        <div class="fc-shape"><div class="s-rect"></div></div>
+        <div><h6>Rectangle (Process)</h6><p>Defines calculations required — e.g. computing tax, gross pay, area.</p></div>
+      </div>
+      <div class="fc-sym">
+        <div class="fc-shape"><div class="s-diam"></div></div>
+        <div><h6>Diamond (Decision)</h6><p>Indicates a decision. One entrance, <strong>two exits</strong>: one for True/Yes, one for False/No.</p></div>
+      </div>
+      <div class="fc-sym">
+        <div class="fc-shape"><div class="s-circ"></div></div>
+        <div><h6>Connector (Circle)</h6><p>Used when the flowchart spans 2 or more pages to join sections.</p></div>
+      </div>
+      <div class="fc-sym">
+        <div class="fc-shape" style="font-size:1.5rem;min-width:48px;justify-content:center">→</div>
+        <div><h6>Flow Lines (Arrows)</h6><p>Connect the various symbols; define the logic and direction of the algorithm.</p></div>
+      </div>
+    </div>
+
+    <h4>Flowchart Example 1 — Area of a Rectangle (Sequence)</h4>
+    <div class="fc-demo">
+      <div class="fc-term">START</div>
+      <div class="fc-arr"></div>
+      <div class="fc-io"><span>INPUT length, breadth</span></div>
+      <div class="fc-arr"></div>
+      <div class="fc-proc">area = length × breadth</div>
+      <div class="fc-arr"></div>
+      <div class="fc-io"><span>DISPLAY area</span></div>
+      <div class="fc-arr"></div>
+      <div class="fc-term">STOP</div>
+    </div>
+
+    <h4>Flowchart Example 2 — Even or Odd Number (Selection)</h4>
+    <div class="box ex">
+      <div class="box-label">Flowchart Logic — Selection</div>
+      <strong>START</strong> → Input N → <em>Decision diamond:</em> Is N mod 2 == 0?<br><br>
+      &nbsp;&nbsp;→ <strong>YES</strong> path: Display "Even" → END<br>
+      &nbsp;&nbsp;→ <strong>NO</strong> path: Display "Odd" → END<br><br>
+      <em>The decision diamond has one entrance and two exits (Yes and No branches).</em>
+    </div>
+
+    <h4>Flowchart Example 3 — Sum of Even Integers 2–20 (Iteration)</h4>
+    <div class="box ex">
+      <div class="box-label">Flowchart Logic — Iteration (Loop)</div>
+      <strong>START</strong> → Initialise: sum ← 0, i ← 2 → <em>Decision diamond:</em> Is i ≤ 20?<br><br>
+      &nbsp;&nbsp;→ <strong>YES</strong>: sum = sum + i → i = i + 2 → Loop <em>back</em> to decision<br>
+      &nbsp;&nbsp;→ <strong>NO</strong>: Display sum → <strong>STOP</strong><br><br>
+      <em>The loop repeats as long as the condition is true (i ≤ 20). When false, the loop exits.</em>
+    </div>
+  </div>
+
+  <div class="sumbox">
+    <h4>📌 Chapter 3 — Key Takeaways</h4>
+    <ul>
+      <li>An algorithm is finite, unambiguous, correct, definite, and efficient — language-independent.</li>
+      <li>The prime property of an algorithm is <strong>correctness</strong>.</li>
+      <li>Top-down design (divide and conquer) breaks problems into sub-problems — this is how C programs are structured.</li>
+      <li>Pseudocode: English-like, language-independent, focuses on logic not syntax — plan before you code.</li>
+      <li>Three basic constructs: <strong>Sequence</strong> (in order), <strong>Selection</strong> (IF/ELSE), <strong>Iteration</strong> (loops).</li>
+      <li>Flowchart symbols: Oval (Start/Stop) → Parallelogram (I/O) → Rectangle (Process) → Diamond (Decision) → Arrows (flow).</li>
+      <li>Decision diamonds always have <strong>one entrance and two exits</strong> (True/Yes and False/No).</li>
+    </ul>
+  </div>
+
+  <div class="review">
+    <h4>🔍 Review Questions &amp; Answers</h4>
+    <div class="rq">
+      <div class="qt">3.1 — State the benefits of top-down analysis in problem decomposition.</div>
+      <div class="ans"><div class="al">Answer</div>
+        (i) Understandability — easy to understand &nbsp;|&nbsp; (ii) Maintainability — easy to change/modify &nbsp;|&nbsp;
+        (iii) Write-ability — easy to write &nbsp;|&nbsp; (iv) Testability — easy to test &nbsp;|&nbsp; (v) Promotion of teamwork — easy to share and solve
+      </div>
+    </div>
+    <div class="rq">
+      <div class="qt">3.2 — Using pseudocode, develop an algorithm to find x<sup>n</sup> (x raised to the power of n).</div>
+      <div class="ans"><div class="al">Answer</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.84rem;line-height:1.9">
+          Power1(real x, positive int n)<br>
+          &nbsp;&nbsp;(1) result = x<br>
+          &nbsp;&nbsp;(2) FOR i = 1 TO n – 1 DO<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;(3) result = result * x<br>
+          &nbsp;&nbsp;(4) RETURN result
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     CHAPTER 4
+══════════════════════════════════════════════ -->
+<div class="chap c4" id="ch4">
+  <div class="ch-head">
+    <div class="ch-num">Chapter Four</div>
+    <h2>Introduction to C Programming</h2>
+    <p>Covers the origin of C, its fundamental constructs, and walks you through writing, understanding, and running your first C programs line by line.</p>
+  </div>
+
+  <!-- 4.1 History -->
+  <div class="sec">
+    <h3>4.1 — Brief History of C</h3>
+    <div class="g2">
+      <div class="card">
+        <h5>🗓️ 1972 — Birth of C</h5>
+        <p><strong>Dennis Ritchie</strong> of Bell Laboratories developed C for his new Operating System project. It became known as the UNIX OS's development language. Features: portability, speed, precision, strongly typed.</p>
+      </div>
+      <div class="card">
+        <h5>🗓️ Early 1980s — C++</h5>
+        <p><strong>Bjarne Stroustrup</strong> at Bell Labs developed C++ (adding OOP to C). C++ is a superset of C — any valid C program also runs on a C++ platform.</p>
+      </div>
+    </div>
+    <div class="box tip">
+      <div class="box-label">Key Fact</div>
+      Today, most of the code for general-purpose operating systems is written in C or C++. Several C dialects exist: Visual C, Borland C, Turbo C, Code Warrior. <strong>ANSI</strong> (American National Standards Institute) developed a standard for consistency.
+    </div>
+
+    <h4>Key Features of C</h4>
+    <div class="g2">
+      <div class="card"><h5>Portability</h5><p>C programs can run on different machines with minimal changes.</p></div>
+      <div class="card"><h5>Speed</h5><p>C produces fast, efficient executable programs.</p></div>
+      <div class="card"><h5>Precision</h5><p>Fine-grained control over hardware and memory operations.</p></div>
+      <div class="card"><h5>Strongly Typed</h5><p>Every variable must have a declared data type.</p></div>
+    </div>
+  </div>
+
+  <!-- 4.2 First Program -->
+  <div class="sec">
+    <h3>4.2 — My First Program in C</h3>
+    <p>C programming promotes a disciplined approach to program design. Here is the classic "Hello World" program:</p>
+
+    <div class="code-wrap">
+      <span class="code-lang">C</span>
+      <pre><span class="cm">// My first C program to display welcome message on the screen</span>
+<span class="pp">#include</span><span class="str">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>()
+<span class="op">{</span>
+    <span class="fn">printf</span>(<span class="str">"\nHello World"</span>);
+
+    <span class="kw">return</span> <span class="num">0</span>;
+<span class="op">}</span></pre>
+    </div>
+
+    <h4>Line-by-Line Explanation</h4>
+    <div class="lines">
+      <div class="lrow">
+        <span class="ln">Line 1</span>
+        <span class="lc">// My first C program...</span>
+        <span class="ld"><strong>Single-line comment.</strong> The <code>//</code> means everything after it on that line is a comment — not executed by the compiler. Used for internal documentation.</span>
+      </div>
+      <div class="lrow">
+        <span class="ln">Line 2</span>
+        <span class="lc">#include&lt;stdio.h&gt;</span>
+        <span class="ld"><strong>Preprocessor directive.</strong> Lines with <code>#</code> are processed by the C preprocessor <em>before</em> compilation. This includes the Standard Input/Output library — needed for <code>printf</code> and <code>scanf</code> to work. Making the <code>printf</code> function perform its task.</span>
+      </div>
+      <div class="lrow">
+        <span class="ln">Line 3</span>
+        <span class="lc">int main()</span>
+        <span class="ld"><strong>Main function declaration.</strong> Every C program must have exactly one <code>main</code> function — program execution begins here. <code>int</code> = the function returns an integer. The <code>()</code> indicate it is a function (a program building block).</span>
+      </div>
+      <div class="lrow">
+        <span class="ln">Line 4</span>
+        <span class="lc">{</span>
+        <span class="ld"><strong>Opening brace.</strong> Marks the start of the function body — the block of code to execute. Everything meant to execute is written within this block.</span>
+      </div>
+      <div class="lrow">
+        <span class="ln">Line 5</span>
+        <span class="lc">printf("\nHello World");</span>
+        <span class="ld"><strong>Output statement.</strong> <code>printf()</code> displays text on screen. <code>\n</code> is an escape sequence (newline — moves cursor to next line). The <code>;</code> semicolon is the <strong>statement terminator</strong> — ends every C statement.</span>
+      </div>
+      <div class="lrow">
+        <span class="ln">Line 7</span>
+        <span class="lc">return 0;</span>
+        <span class="ld"><strong>Return statement.</strong> Signals that the program terminated successfully and exits the <code>main</code> function. Returning <code>0</code> from main indicates successful execution. <code>return 0;</code> and nothing at all is the same.</span>
+      </div>
+      <div class="lrow">
+        <span class="ln">Line 8</span>
+        <span class="lc">}</span>
+        <span class="ld"><strong>Closing brace.</strong> Marks the end of the function body / block.</span>
+      </div>
+    </div>
+
+    <h4>Comments in C — Explained</h4>
+    <div class="code-wrap">
+      <span class="code-lang">C</span>
+      <pre><span class="cm">// This is a SINGLE-LINE comment — only covers one line</span>
+
+<span class="cm">/* This is a MULTI-LINE comment.
+   It can span across
+   multiple lines like this. */</span></pre>
+    </div>
+    <div class="box tip">
+      <div class="box-label">Why Use Comments?</div>
+      Comments are good programming practice for <strong>internal documentation</strong>. They enhance the readability of code. Comments are <strong>non-executable statements</strong> — the compiler performs no action on them. The first line of a program typically explains what the program is about.
+    </div>
+
+    <h4>Keywords in C</h4>
+    <p><strong>Keywords</strong> are words reserved by the C compiler for predefined use. They must not be used as identifiers (variable names). Examples: <code>int</code>, <code>return</code>, <code>if</code>, <code>while</code>, <code>for</code>.</p>
+
+    <h4>Escape Sequences</h4>
+    <p>The backslash <code>\</code> is called the <strong>escape character</strong>. The combination of the backslash and the next character is called an <strong>escape sequence</strong> — it gives the compiler notice that a special character is to be output next.</p>
+    <div class="escs">
+      <div class="esc"><span class="esc-s">\n</span><span class="esc-d">Newline — moves cursor to start of next line</span></div>
+      <div class="esc"><span class="esc-s">\t</span><span class="esc-d">Horizontal tab — moves cursor to next tab stop</span></div>
+      <div class="esc"><span class="esc-s">\r</span><span class="esc-d">Carriage return — positions cursor to beginning of current line</span></div>
+      <div class="esc"><span class="esc-s">\\</span><span class="esc-d">Print a backslash character</span></div>
+      <div class="esc"><span class="esc-s">\'</span><span class="esc-d">Print a single quote character</span></div>
+      <div class="esc"><span class="esc-s">\"</span><span class="esc-d">Print a double quote character</span></div>
+      <div class="esc"><span class="esc-s">\a</span><span class="esc-d">Alert — sounds the bell</span></div>
+    </div>
+  </div>
+
+  <!-- 4.3 Second Program -->
+  <div class="sec">
+    <h3>4.3 — Another Program: Comparing Two Numbers</h3>
+    <p>This program introduces variables, user input, and conditional logic:</p>
+
+    <div class="code-wrap">
+      <span class="code-lang">C</span>
+      <pre><span class="cm">/* Program to compare integer values input from the keyboard;
+   it uses the if statement and relational operator */</span>
+
+<span class="pp">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>()
+<span class="op">{</span>
+    <span class="kw">int</span> num1;          <span class="cm">// variable declaration</span>
+    <span class="kw">int</span> num2;          <span class="cm">// note: can also be written as: int num1, num2;</span>
+
+    <span class="fn">printf</span>(<span class="str">"\nEnter the first integer value to compare"</span>);  <span class="cm">// tells user what to do</span>
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, <span class="op">&amp;</span>num1);  <span class="cm">// reads integer from keyboard into num1</span>
+
+    <span class="fn">printf</span>(<span class="str">"\nEnter the second integer value to compare"</span>);
+    <span class="fn">scanf</span>(<span class="str">"%d"</span>, <span class="op">&amp;</span>num2);  <span class="cm">// num2 is also a temporary memory store</span>
+
+    <span class="kw">if</span> (num1 <span class="op">&gt;</span> num2)    <span class="cm">// if statement is a conditional test</span>
+        <span class="fn">printf</span>(<span class="str">"\n%d is greater than %d"</span>, num1, num2);
+
+    <span class="kw">return</span> <span class="num">0</span>;
+<span class="op">}</span></pre>
+    </div>
+
+    <h4>New Concepts Explained</h4>
+    <div class="lines">
+      <div class="lrow">
+        <span class="ln">int num1;</span>
+        <span class="lc">Variable Declaration</span>
+        <span class="ld">Declares a variable <code>num1</code> of type integer. A variable is a <strong>temporary memory location</strong> to store data during program execution. Must be declared with a type before use.</span>
+      </div>
+      <div class="lrow">
+        <span class="ln">scanf()</span>
+        <span class="lc">Input Function</span>
+        <span class="ld">Reads a value from the keyboard/console. <code>scanf("%d", &amp;num1)</code> — reads an integer into <code>num1</code>. It is an input function which allows us to read in a value from the keyboard into a variable.</span>
+      </div>
+      <div class="lrow">
+        <span class="ln">%d</span>
+        <span class="lc">Format Specifier</span>
+        <span class="ld">Tells <code>printf</code> / <code>scanf</code> the data type: <code>%d</code> = integer (decimal). <code>%f</code> = float, <code>%c</code> = character, <code>%s</code> = string. The <code>d</code> in <code>%d</code> = decimal integer.</span>
+      </div>
+      <div class="lrow">
+        <span class="ln">&amp;num1</span>
+        <span class="lc">Address Operator</span>
+        <span class="ld"><code>&amp;</code> is the address operator (ampersand). It <strong>presents the memory location</strong> of the variable where the value will be stored. Required in <code>scanf</code> so it knows where to put the input value.</span>
+      </div>
+      <div class="lrow">
+        <span class="ln">if (num1 &gt; num2)</span>
+        <span class="lc">Conditional Statement</span>
+        <span class="ld">Tests a condition. If the condition is <strong>True</strong>, the next statement executes. <code>&gt;</code> is a relational operator (greater than). If the next statement to execute is more than one statement, wrap them in curly brackets <code>{ }</code> as a code block.</span>
+      </div>
+    </div>
+
+    <h4>Example — Computing f = (a - b)(x - y)</h4>
+    <div class="code-wrap">
+      <span class="code-lang">C</span>
+      <pre><span class="cm">// PROGRAM for f = (a-b)(x-y)</span>
+<span class="pp">#include</span> <span class="str">&lt;stdio.h&gt;</span>
+
+<span class="kw">int</span> <span class="fn">main</span>()
+<span class="op">{</span>
+    <span class="kw">int</span> a = <span class="num">5</span>;
+    <span class="kw">int</span> b = <span class="num">1</span>;
+    <span class="kw">int</span> x = <span class="num">10</span>;
+    <span class="kw">int</span> y = <span class="num">5</span>;
+    <span class="kw">int</span> f = (a - b) * (x - y);
+    <span class="fn">printf</span>(<span class="str">"\nThe result of the formula = %d"</span>, f);
+    <span class="kw">return</span> <span class="num">0</span>;
+<span class="op">}</span>
+<span class="cm">// Output: The result of the formula = 20</span></pre>
+    </div>
+    <div class="box tip">
+      <div class="box-label">DIY Challenge</div>
+      What does this print? <code>printf("*\n**\n***\n****\n");</code> — trace the escape sequences before running it. Also try: write an interactive program to accept a number and display the square of the number.
+    </div>
+  </div>
+
+  <div class="sumbox">
+    <h4>📌 Chapter 4 — Key Takeaways</h4>
+    <ul>
+      <li>C was developed in <strong>1972 by Dennis Ritchie</strong> at Bell Laboratories for the UNIX OS.</li>
+      <li>C++ (early 1980s, Bjarne Stroustrup) is a superset of C — adds OOP.</li>
+      <li><code>#include &lt;stdio.h&gt;</code> = preprocessor directive; includes the I/O library for <code>printf</code> &amp; <code>scanf</code>.</li>
+      <li>Every C program must have a <code>main()</code> function — program execution starts here.</li>
+      <li><code>printf()</code> = output to screen &nbsp;|&nbsp; <code>scanf()</code> = read input from keyboard.</li>
+      <li>The semicolon <code>;</code> terminates every C statement (except <code>#include</code> lines and <code>if</code>).</li>
+      <li><code>\n</code> = newline, <code>\t</code> = tab, <code>\r</code> = carriage return, <code>\\</code> = backslash.</li>
+      <li><code>%d</code> = format specifier for integers &nbsp;|&nbsp; <code>&amp;variable</code> = address operator in <code>scanf</code>.</li>
+      <li>Comments: <code>//</code> (single-line) and <code>/* ... */</code> (multi-line) — documented, not executed.</li>
+      <li><code>return 0;</code> = program terminates successfully.</li>
+      <li>Keywords are reserved by C — cannot be used as variable names (<code>int</code>, <code>return</code>, <code>if</code>, etc.).</li>
+    </ul>
+  </div>
+
+  <div class="review">
+    <h4>🔍 Review Questions &amp; Answers</h4>
+    <div class="rq">
+      <div class="qt">4.1 — Write a program to find the lesser of two numbers.</div>
+      <div class="ans"><div class="al">Answer</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.82rem;line-height:1.9;background:#F8FAFC;padding:.75rem;border-radius:4px">
+          #include &lt;stdio.h&gt;<br>
+          int main() {<br>
+          &nbsp;&nbsp;int num1, num2;<br>
+          &nbsp;&nbsp;printf("\nEnter the first integer value to compare");<br>
+          &nbsp;&nbsp;scanf("%d", &amp;num1);<br>
+          &nbsp;&nbsp;printf("\nEnter the second integer value to compare");<br>
+          &nbsp;&nbsp;scanf("%d", &amp;num2);<br>
+          &nbsp;&nbsp;if (num1 &lt; num2) &nbsp;&nbsp;&nbsp;&nbsp;/* changed &gt; to &lt; to find lesser */<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;printf("\n%d is lesser than %d", num1, num2);<br>
+          &nbsp;&nbsp;return 0;<br>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="rq">
+      <div class="qt">4.2 — Given a = 5, b = 1, x = 10, y = 5, write a program to find f = (a-b)(x-y).</div>
+      <div class="ans"><div class="al">Answer</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.82rem;line-height:1.9;background:#F8FAFC;padding:.75rem;border-radius:4px">
+          int a=5, b=1, x=10, y=5;<br>
+          int f = (a-b)*(x-y);<br>
+          printf("\nThe result of the formula = %d", f);<br>
+          <span style="color:#78716C">// Output: The result of the formula = 20</span>
+        </div>
+      </div>
+    </div>
+    <div class="rq">
+      <div class="qt">Why do you use comments internally in a program, and what is the meaning of <code>return 0;</code>?</div>
+      <div class="ans"><div class="al">Answer</div>
+        <strong>Comments:</strong> To make the code understandable and readable — internal documentation.<br>
+        <strong>return 0:</strong> The program terminates successfully and exits the function. Signals to the OS that the program ended without errors.
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- /.wrap -->
+
+<!-- ══════════════════════════════════════════════
+     QUICK REFERENCE
+══════════════════════════════════════════════ -->
+<div class="qr" id="qref">
+  <div class="qr-wrap">
+    <h2>Quick Reference Card</h2>
+    <p>All key terms, properties, symbols, and syntax — at a glance.</p>
+    <div class="qr-grid">
+      <div class="qc">
+        <h4>Key Definitions</h4>
+        <ul>
+          <li><strong>Computer</strong>: Accepts, processes, outputs &amp; stores data</li>
+          <li><strong>Program</strong>: Instructions in computer-understandable language</li>
+          <li><strong>Algorithm</strong>: Step-by-step procedure to solve a problem</li>
+          <li><strong>Pseudocode</strong>: English-like algorithm description (not executable)</li>
+          <li><strong>Flowchart</strong>: Graphical algorithm using standardised symbols</li>
+        </ul>
+      </div>
+      <div class="qc">
+        <h4>5 Problem Solving Steps</h4>
+        <ul>
+          <li>1. Understand &amp; Analyse</li>
+          <li>2. Develop Algorithm</li>
+          <li>3. Code / Implement</li>
+          <li>4. Test</li>
+          <li>5. Deploy &amp; Maintain</li>
+        </ul>
+      </div>
+      <div class="qc">
+        <h4>4 Pillars of Comp. Thinking</h4>
+        <ul>
+          <li>1. Decomposition</li>
+          <li>2. Pattern Recognition</li>
+          <li>3. Abstraction</li>
+          <li>4. Algorithm Design</li>
+        </ul>
+      </div>
+      <div class="qc">
+        <h4>5 Algorithm Properties</h4>
+        <ul>
+          <li><strong>Correct</strong> — all legal inputs</li>
+          <li><strong>Unambiguous</strong> — one meaning each step</li>
+          <li><strong>Finite</strong> — must end</li>
+          <li><strong>Definite</strong> — well defined</li>
+          <li><strong>Efficient</strong> — Time + Space</li>
+        </ul>
+      </div>
+      <div class="qc">
+        <h4>C Program Structure</h4>
+        <ul>
+          <li><strong>#include &lt;stdio.h&gt;</strong> — header file</li>
+          <li><strong>int main() { }</strong> — main function</li>
+          <li><strong>printf()</strong> — output to screen</li>
+          <li><strong>scanf()</strong> — read input</li>
+          <li><strong>return 0;</strong> — end program</li>
+          <li><strong>;</strong> — statement terminator</li>
+        </ul>
+      </div>
+      <div class="qc">
+        <h4>Escape Sequences</h4>
+        <ul>
+          <li><strong>\n</strong> — newline</li>
+          <li><strong>\t</strong> — tab</li>
+          <li><strong>\r</strong> — carriage return</li>
+          <li><strong>\\</strong> — backslash</li>
+          <li><strong>\"</strong> — double quote</li>
+          <li><strong>\a</strong> — alert/bell</li>
+        </ul>
+      </div>
+      <div class="qc">
+        <h4>Pseudocode Keywords</h4>
+        <ul>
+          <li><strong>Input:</strong> READ, GET, INPUT, OBTAIN</li>
+          <li><strong>Output:</strong> DISPLAY, PRINT, SHOW</li>
+          <li><strong>Compute:</strong> CALCULATE, DETERMINE</li>
+          <li><strong>Loop:</strong> DO WHILE, FOR, DO UNTIL</li>
+          <li><strong>Decision:</strong> IF, THEN, ELSE, ENDIF</li>
+          <li><strong>Init:</strong> SET, INIT</li>
+        </ul>
+      </div>
+      <div class="qc">
+        <h4>Flowchart Symbols</h4>
+        <ul>
+          <li><strong>Oval</strong> — Start / Stop</li>
+          <li><strong>Parallelogram</strong> — Input / Output</li>
+          <li><strong>Rectangle</strong> — Processing</li>
+          <li><strong>Diamond</strong> — Decision (2 exits)</li>
+          <li><strong>Circle</strong> — Connector (multi-page)</li>
+          <li><strong>Arrows</strong> — Flow direction</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>COS 102 — Problem Solving Using C Programming</strong><br>
+  Babcock University &nbsp;·&nbsp; Chapters 1–4 Full Study Guide<br><br>
+  <span style="opacity:.45;font-size:.78rem">Study smart. Rest well. You've got this. 💚</span>
+</footer>
+
+<script>
+  const navLinks = document.querySelectorAll('nav a[href^="#"]');
+  const sections = ['ch1','ch2','ch3','ch4','qref'].map(id => document.getElementById(id));
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if(s && window.scrollY >= s.offsetTop - 120) current = s.id; });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }, {passive:true});
+</script>
+</body>
+</html>
